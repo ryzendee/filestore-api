@@ -1,0 +1,12 @@
+version: '3.9'
+
+
+services:
+  file-store-db:
+    image: postgres:15.6
+    environment:
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_DB=filestoredb
+    ports:
+      - "5315:5432"
