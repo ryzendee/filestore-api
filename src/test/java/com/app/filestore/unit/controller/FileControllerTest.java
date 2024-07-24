@@ -1,8 +1,10 @@
 package com.app.filestore.unit.controller;
 
 import com.app.filestore.controller.FileController;
+import com.app.filestore.dto.FileDto;
 import com.app.filestore.dto.FileDtoRequest;
 import com.app.filestore.dto.FileDtoResponse;
+import com.app.filestore.exception.file.FileNotFoundException;
 import com.app.filestore.service.FileService;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -103,7 +105,7 @@ class FileControllerTest {
         verify(fileService, never()).saveFile(dtoRequest);
     }
 
-    @DisplayName("Save file: invalid creationTime and then status bad request ")
+    @DisplayName("Save file: invalid creationTime and then status bad request")
     @MethodSource("getArgsForInvalidCreationTime")
     @ParameterizedTest
     void saveFile_invalidCreationTime_statusBadRequest(LocalDate invalidCreationTime) {
@@ -118,6 +120,48 @@ class FileControllerTest {
                 .status(HttpStatus.BAD_REQUEST);
 
         verify(fileService, never()).saveFile(dtoRequest);
+    }
+
+    @DisplayName("Get file by id: should return file with status ok (200)")
+    @Test
+    void getFileById_existsFile_shouldReturnFileWithStatusOk() {
+        Long id = 1L;
+        FileDto expectedDto = new FileDto("asdkzxETdxz", "title", "descr", LocalDate.now());
+
+        when(fileService.getFileById(id))
+                .thenReturn(expectedDto);
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get(BASE_URL + "/{id}")
+                .then()
+                .status(HttpStatus.OK)
+                .body("title", equalTo(expectedDto.title()))
+                .body("file", equalTo(expectedDto.file()))
+                .body("description", equalTo(expectedDto.description()))
+                .body("creationTime", equalTo(expectedDto.creationTime().toString()));
+
+        verify(fileService).getFileById(id);
+    }
+
+    @DisplayName("Get file by id: file not found then status bad request")
+    @Test
+    void getFileById_nonExistsFile_statusBadRequest() {
+        Long id = 1L;
+        FileDto expectedDto = new FileDto("asdkzxETdxz", "title", "descr", LocalDate.now());
+
+        when(fileService.getFileById(id))
+                .thenThrow(new FileNotFoundException("File not found!"));
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get(BASE_URL + "/{id}")
+                .then()
+                .status(HttpStatus.BAD_REQUEST);
+
+        verify(fileService).getFileById(id);
     }
 
     private static Stream<Arguments> getArgsForInvalidFile() {
