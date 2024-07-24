@@ -2,8 +2,7 @@ package com.app.filestore.unit.controller;
 
 import com.app.filestore.controller.FileController;
 import com.app.filestore.dto.FileDto;
-import com.app.filestore.dto.FileDtoRequest;
-import com.app.filestore.dto.FileDtoResponse;
+import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.exception.file.FileNotFoundException;
 import com.app.filestore.service.FileService;
 import io.restassured.http.ContentType;
@@ -19,10 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -49,11 +53,11 @@ class FileControllerTest {
         RestAssuredMockMvc.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @DisplayName("Save file: should save file and return id with status CREATED(200)")
+    @DisplayName("Save file: should save file and return id with status created")
     @Test
     void saveFile_validRequest_statusCreated() {
-        FileDtoRequest dtoRequest = new FileDtoRequest("asdkxzcWiksadm", "test-title", "descr", LocalDate.now());
-        FileDtoResponse expectedResponse = new FileDtoResponse(1L);
+        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("asdkxzcWiksadm", "test-title", "descr", LocalDate.now());
+        FileCreateDtoResponse expectedResponse = new FileCreateDtoResponse(1L);
         int expectedId = expectedResponse.id().intValue();
 
         when(fileService.saveFile(dtoRequest))
@@ -75,7 +79,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidFile")
     @ParameterizedTest
     void saveFile_invalidFile_statusBadRequest(String invalidFile) {
-        FileDtoRequest dtoRequest = new FileDtoRequest(invalidFile, "title", "descr", LocalDate.now());
+        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse(invalidFile, "title", "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -92,7 +96,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidTitle")
     @ParameterizedTest
     void saveFile_invalidTitle_statusBadRequest(String invalidTitle) {
-        FileDtoRequest dtoRequest = new FileDtoRequest("dsazcxklASejff", invalidTitle, "descr", LocalDate.now());
+        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("dsazcxklASejff", invalidTitle, "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -109,7 +113,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidCreationTime")
     @ParameterizedTest
     void saveFile_invalidCreationTime_statusBadRequest(LocalDate invalidCreationTime) {
-        FileDtoRequest dtoRequest = new FileDtoRequest("tesdsavZXVcwtee", "title", "descr", invalidCreationTime);
+        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("tesdsavZXVcwtee", "title", "descr", invalidCreationTime);
 
         given()
                 .contentType(ContentType.JSON)
@@ -122,7 +126,7 @@ class FileControllerTest {
         verify(fileService, never()).saveFile(dtoRequest);
     }
 
-    @DisplayName("Get file by id: should return file with status ok (200)")
+    @DisplayName("Get file by id: should return file with status ok")
     @Test
     void getFileById_existsFile_shouldReturnFileWithStatusOk() {
         Long id = 1L;
@@ -164,6 +168,106 @@ class FileControllerTest {
         verify(fileService).getFileById(id);
     }
 
+    @DisplayName("Get file page: should return page by provided params with status ok")
+    @Test
+    void getFilePage_validParams_shouldReturnPageWithStatusOk() {
+        Page<FileDto> fileDtoPage = getFileDtoPage();
+        int page = 1;
+        int size = 30;
+        String direction = "asc";
+
+        when(fileService.getFilePageSortedByCreationTime(page, size, direction))
+                .thenReturn(fileDtoPage);
+
+        given()
+                .param("page", page)
+                .param("size", size)
+                .param("direction", direction)
+                .when()
+                .get(BASE_URL)
+                .then()
+                .status(HttpStatus.OK);
+
+        verify(fileService).getFilePageSortedByCreationTime(page, size, direction);
+    }
+
+    @DisplayName("Get file page: should return page by default params with status ok")
+    @Test
+    void getFilePage_withoutParams_shouldReturnPageWithStatusOk() {
+        Page<FileDto> fileDtoPage = getFileDtoPage();
+        int defaultPage = 0;
+        int defaultSize = 20;
+        String defaultDirection = "asc";
+
+        when(fileService.getFilePageSortedByCreationTime(defaultPage, defaultSize, defaultDirection))
+                .thenReturn(fileDtoPage);
+
+        given()
+                .when()
+                .get(BASE_URL)
+                .then()
+                .status(HttpStatus.OK);
+
+        verify(fileService).getFilePageSortedByCreationTime(defaultPage, defaultSize, defaultDirection);
+    }
+
+    @DisplayName("Get file page: invalid page param then status bad request")
+    @Test
+    void getFilePage_invalidPageParam_statusBadRequest() {
+        int page = -1;
+        int size = 30;
+        String direction = "asc";
+
+        given()
+                .param("page", page)
+                .param("size", size)
+                .param("direction", direction)
+                .when()
+                .get(BASE_URL)
+                .then()
+                .status(HttpStatus.BAD_REQUEST);
+
+        verify(fileService, never()).getFilePageSortedByCreationTime(page, size, direction);
+    }
+
+    @DisplayName("Get file page: invalid size param then status bad request")
+    @Test
+    void getFilePage_invalidSizeParam_statusBadRequest() {
+        int page = 1;
+        int size = -1;
+        String direction = "asc";
+
+        given()
+                .param("page", page)
+                .param("size", size)
+                .param("direction", direction)
+                .when()
+                .get(BASE_URL)
+                .then()
+                .status(HttpStatus.BAD_REQUEST);
+
+        verify(fileService, never()).getFilePageSortedByCreationTime(page, size, direction);
+    }
+
+    @DisplayName("Get file page: invalid direction param then status bad request")
+    @Test
+    void getFilePage_invalidDirectionParam_statusBadRequest() {
+        int page = 1;
+        int size = 10;
+        String direction = "dummy";
+
+        given()
+                .param("page", page)
+                .param("size", size)
+                .param("direction", direction)
+                .when()
+                .get(BASE_URL)
+                .then()
+                .status(HttpStatus.BAD_REQUEST);
+
+        verify(fileService, never()).getFilePageSortedByCreationTime(page, size, direction);
+    }
+
     private static Stream<Arguments> getArgsForInvalidFile() {
         return Stream.of(
                 arguments(named("File is blank", "  ")),
@@ -183,5 +287,15 @@ class FileControllerTest {
                 arguments(named("Date is null", null)),
                 arguments(named("Date in the future", LocalDate.now().plusMonths(1)))
         );
+    }
+
+    private Page<FileDto> getFileDtoPage() {
+        FileDto firstDto = new FileDto("asdvxETesszxcd", "first-title", "first-descr", LocalDate.now());
+        FileDto secondDto = new FileDto("asdat32weds", "second-title", "second-descr", LocalDate.now());
+
+
+        List<FileDto> fileDtoList = List.of(firstDto, secondDto);
+
+        return new PageImpl<>(fileDtoList, PageRequest.of(0, 2, Sort.by(Sort.Order.desc("creationTime"))), fileDtoList.size());
     }
 }

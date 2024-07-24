@@ -1,8 +1,7 @@
 package com.app.filestore.unit.service;
 
 import com.app.filestore.dto.FileDto;
-import com.app.filestore.dto.FileDtoRequest;
-import com.app.filestore.dto.FileDtoResponse;
+import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.entity.FileEntity;
 import com.app.filestore.exception.file.FileNotFoundException;
 import com.app.filestore.mapper.FileMapper;
@@ -14,8 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +39,7 @@ public class FileServiceTest {
     @DisplayName("Save file: should save file and return file response")
     @Test
     void saveFile_noCondition_shouldSaveAndReturnFileResponse() {
-        FileDtoRequest dtoRequest = new FileDtoRequest("sadXZcvklnsd", "title", "descr", LocalDate.now());
+        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("sadXZcvklnsd", "title", "descr", LocalDate.now());
         FileEntity fileEntity = new FileEntity(1L, dtoRequest.file(), dtoRequest.title(), dtoRequest.description(), dtoRequest.creationTime());
 
         when(fileMapper.map(dtoRequest))
@@ -45,11 +47,11 @@ public class FileServiceTest {
         when(fileRepository.save(fileEntity))
                 .thenReturn(fileEntity);
 
-        FileDtoResponse fileDtoResponse = fileService.saveFile(dtoRequest);
+        FileCreateDtoResponse fileCreateDtoResponse = fileService.saveFile(dtoRequest);
 
         verify(fileMapper).map(dtoRequest);
         verify(fileRepository).save(fileEntity);
-        assertThat(fileDtoResponse.id()).isEqualTo(fileEntity.getId());
+        assertThat(fileCreateDtoResponse.id()).isEqualTo(fileEntity.getId());
     }
 
     @DisplayName("Get file by id: should return file")
@@ -84,5 +86,36 @@ public class FileServiceTest {
 
         verify(fileRepository).findById(id);
         verify(fileMapper, never()).map(any(FileEntity.class));
+    }
+
+    @DisplayName("Get file page: should return file page")
+    @Test
+    void getFilePage_noCondition_shouldReturnFilePage() {
+        //Arguments
+        int page = 0;
+        int size = 5;
+        String direction = "desc";
+        Sort sortByCreationTime = Sort.by(Sort.Direction.DESC, "creationTime");
+        Pageable pageable = PageRequest.of(page, size, sortByCreationTime);
+
+        //Mock data and invocations
+        FileEntity fileEntity = new FileEntity();
+        FileDto fileDto = new FileDto("file", "title", "descr", LocalDate.now());
+        List<FileEntity> fileEntities = Collections.singletonList(fileEntity);
+        Page<FileEntity> fileEntityPage = new PageImpl<>(fileEntities, pageable, fileEntities.size());
+
+        when(fileRepository.findAll(pageable))
+                .thenReturn(fileEntityPage);
+        when(fileMapper.map(fileEntity))
+                .thenReturn(fileDto);
+
+        // When
+        Page<FileDto> actualPage = fileService.getFilePageSortedByCreationTime(page, size, direction);
+
+        //Then
+        verify(fileRepository).findAll(pageable);
+        verify(fileMapper).map(fileEntity);
+        assertThat(actualPage.getTotalElements()).isEqualTo(fileEntities.size());
+        assertThat(actualPage).containsOnly(fileDto);
     }
 }
