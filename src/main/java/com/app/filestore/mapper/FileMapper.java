@@ -1,5 +1,6 @@
 package com.app.filestore.mapper;
 
+import com.app.filestore.dto.FileDto;
 import com.app.filestore.dto.FileDtoRequest;
 import com.app.filestore.entity.FileEntity;
 import org.mapstruct.Mapper;
@@ -11,4 +12,5 @@ public interface FileMapper {
 
     @Mapping(target = "id", ignore = true)
     FileEntity map(FileDtoRequest fileDtoRequest);
+    FileDto map(FileEntity fileEntity);
 }
