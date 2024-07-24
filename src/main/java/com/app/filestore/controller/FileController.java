@@ -1,5 +1,6 @@
 package com.app.filestore.controller;
 
+import com.app.filestore.dto.FileDto;
 import com.app.filestore.dto.FileDtoRequest;
 import com.app.filestore.dto.FileDtoResponse;
 import com.app.filestore.service.FileService;
@@ -22,5 +23,10 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     public FileDtoResponse saveFile(@Valid @RequestBody FileDtoRequest fileDtoRequest) {
         return fileService.saveFile(fileDtoRequest);
+    }
+
+    @GetMapping("/{id}")
+    public FileDto getFileById(@PathVariable Long id) {
+        return fileService.getFileById(id);
     }
 }
