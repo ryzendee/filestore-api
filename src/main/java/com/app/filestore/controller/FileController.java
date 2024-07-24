@@ -5,13 +5,12 @@ import com.app.filestore.dto.FileDtoResponse;
 import com.app.filestore.service.FileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
 public class FileController {
@@ -21,7 +20,7 @@ public class FileController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FileDtoResponse saveFile(@Valid FileDtoRequest fileDtoRequest) {
+    public FileDtoResponse saveFile(@Valid @RequestBody FileDtoRequest fileDtoRequest) {
         return fileService.saveFile(fileDtoRequest);
     }
 }
