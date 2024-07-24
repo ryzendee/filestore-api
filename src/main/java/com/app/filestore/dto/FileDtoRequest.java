@@ -8,6 +8,6 @@ public record FileDtoRequest(
         String file,
         String title,
         @JsonFormat(pattern = "yyyy-MM-dd")
-        LocalDate creationDate
+        LocalDate creationTime
 ) {
 }
