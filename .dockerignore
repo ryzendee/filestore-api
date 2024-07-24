@@ -1,0 +1,9 @@
+.idea
+.gitignore
+Dockerfile
+docker-compose.yml
+target
+mvnw.*
+*.md
+src/main/resources/application.yml
+src/main/resources/application-dev.yml

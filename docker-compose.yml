@@ -1,12 +1,37 @@
 version: '3.9'
 
+volumes:
+  db-data:
+    driver: local
 
 services:
-  file-store-db:
+  app:
+    build:
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - SPRING_DB_URL=jdbc:postgresql://files-db:5432/filestoredb
+      - SPRING_DB_USER=postgresuser
+      - SPRING_DB_PASSWORD=postgrespassword
+    ports:
+      - "8001:8080"
+    depends_on:
+      files-db:
+        condition: service_healthy
+
+  files-db:
     image: postgres:15.6
+    restart: always
     environment:
       - POSTGRES_USER=postgresuser
       - POSTGRES_PASSWORD=postgrespassword
       - POSTGRES_DB=filestoredb
     ports:
       - "5315:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
