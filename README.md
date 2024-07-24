@@ -1,6 +1,7 @@
 # Проект "File-store API"
 
 ## Оглавление
+- [Стек](#стек)
 - [Описание проекта](#описание-проекта)
 - [Основные endpoints](#основные-endpoints)
 - [Примеры запросов](#примеры-запросов)
@@ -9,12 +10,22 @@
   - [С помощью Docker](#с-помощью-docker)
   - [Через IDE (для IDEA)](#через-ide-для-idea)
 
+## Стек
+- Java 17
+- Spring (Boot, Web, JPA)
+- PostgreSQL
+- RestAssuredMockMvc
+- Mapstruct
+
 ## Описание проекта
 
 Данный сервис выполняет роль хранилища различных файлов и их атрибутов. Его функционал:
 - Добавление файла
 - Получение файла по id 
 - Получение страницы с файлами с сортировкой по дате создания 
+
+Весь код контроллера и сервиса был покрыт unit-тестами.
+
 
 ## Основные endpoints
 
@@ -39,7 +50,7 @@
     }
     ```
 
-- `GET /api/v1/files/` -> получение страницы с файлами 
+- `GET /api/v1/files/` -> получение страницы с файлами, дополнительно принимает параметры page(int), size(int), direction(string). Для direction допустимы только два значения - asc/desc
 
 ## Примеры запросов
 
@@ -76,9 +87,13 @@
 ### С помощью Docker
 1. Клонировать репозиторий:
     ```sh
-    git clone github.com/ryzendee/filestore-api
+    git clone https://github.com/ryzendee/filestore-api
     ```
-2. Запустить docker-compose:
+2. Перейти в директорию приложения:
+    ```sh
+    cd filestore-api
+    ```
+3. Запустить docker-compose (по желанию добавить -d для запуска в фоновом режиме):
     ```sh
     docker compose up
     ```
@@ -86,9 +101,13 @@
 ### Через IDE (для IDEA)
 1. Клонировать репозиторий:
     ```sh
-    git clone github.com/ryzendee/filestore-api
+    git clone https://github.com/ryzendee/filestore-api
     ```
-2. Запустить docker-compose-dev:
+2. Перейти в директорию приложения:
+    ```sh
+    cd filestore-api
+    ```    
+2. Запустить docker-compose-dev (по желанию добавить -d для запуска в фоновом режиме):
     ```sh
     docker-compose -f docker-compose-dev.yml up
     ```
