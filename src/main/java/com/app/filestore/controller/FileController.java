@@ -1,6 +1,7 @@
 package com.app.filestore.controller;
 
 import com.app.filestore.dto.FileDto;
+import com.app.filestore.dto.request.FileCreateDtoRequest;
 import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.service.FileService;
 import jakarta.validation.Valid;
@@ -24,8 +25,8 @@ public class FileController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FileCreateDtoResponse saveFile(@Valid @RequestBody com.app.filestore.dto.request.FileCreateDtoResponse fileCreateDtoResponse) {
-        return fileService.saveFile(fileCreateDtoResponse);
+    public FileCreateDtoResponse saveFile(@Valid @RequestBody FileCreateDtoRequest createDtoRequest) {
+        return fileService.saveFile(createDtoRequest);
     }
 
     @GetMapping

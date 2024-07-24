@@ -1,6 +1,7 @@
 package com.app.filestore.unit.service;
 
 import com.app.filestore.dto.FileDto;
+import com.app.filestore.dto.request.FileCreateDtoRequest;
 import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.entity.FileEntity;
 import com.app.filestore.exception.file.FileNotFoundException;
@@ -39,7 +40,7 @@ public class FileServiceTest {
     @DisplayName("Save file: should save file and return file response")
     @Test
     void saveFile_noCondition_shouldSaveAndReturnFileResponse() {
-        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("sadXZcvklnsd", "title", "descr", LocalDate.now());
+        FileCreateDtoRequest dtoRequest = new FileCreateDtoRequest("sadXZcvklnsd", "title", "descr", LocalDate.now());
         FileEntity fileEntity = new FileEntity(1L, dtoRequest.file(), dtoRequest.title(), dtoRequest.description(), dtoRequest.creationTime());
 
         when(fileMapper.map(dtoRequest))

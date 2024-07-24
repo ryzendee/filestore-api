@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDate;
 
-public record FileCreateDtoResponse(
+public record FileCreateDtoRequest(
         @NotBlank(message = "file must not be blank")
         String file,
         @NotBlank(message = "title must not be blank")

@@ -2,6 +2,7 @@ package com.app.filestore.unit.controller;
 
 import com.app.filestore.controller.FileController;
 import com.app.filestore.dto.FileDto;
+import com.app.filestore.dto.request.FileCreateDtoRequest;
 import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.exception.file.FileNotFoundException;
 import com.app.filestore.service.FileService;
@@ -56,7 +57,7 @@ class FileControllerTest {
     @DisplayName("Save file: should save file and return id with status created")
     @Test
     void saveFile_validRequest_statusCreated() {
-        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("asdkxzcWiksadm", "test-title", "descr", LocalDate.now());
+        FileCreateDtoRequest dtoRequest = new FileCreateDtoRequest("asdkxzcWiksadm", "test-title", "descr", LocalDate.now());
         FileCreateDtoResponse expectedResponse = new FileCreateDtoResponse(1L);
         int expectedId = expectedResponse.id().intValue();
 
@@ -79,7 +80,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidFile")
     @ParameterizedTest
     void saveFile_invalidFile_statusBadRequest(String invalidFile) {
-        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse(invalidFile, "title", "descr", LocalDate.now());
+        FileCreateDtoRequest dtoRequest = new FileCreateDtoRequest(invalidFile, "title", "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -96,7 +97,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidTitle")
     @ParameterizedTest
     void saveFile_invalidTitle_statusBadRequest(String invalidTitle) {
-        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("dsazcxklASejff", invalidTitle, "descr", LocalDate.now());
+        FileCreateDtoRequest dtoRequest = new FileCreateDtoRequest("dsazcxklASejff", invalidTitle, "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -113,7 +114,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidCreationTime")
     @ParameterizedTest
     void saveFile_invalidCreationTime_statusBadRequest(LocalDate invalidCreationTime) {
-        com.app.filestore.dto.request.FileCreateDtoResponse dtoRequest = new com.app.filestore.dto.request.FileCreateDtoResponse("tesdsavZXVcwtee", "title", "descr", invalidCreationTime);
+        FileCreateDtoRequest dtoRequest = new FileCreateDtoRequest("tesdsavZXVcwtee", "title", "descr", invalidCreationTime);
 
         given()
                 .contentType(ContentType.JSON)
