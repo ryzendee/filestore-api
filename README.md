@@ -92,6 +92,6 @@
     ```sh
     docker-compose -f docker-compose-dev.yml up
     ```
-3. В edit configurations для приложения задать Active Profile как `dev`.
+3. В edit configurations для приложения задать Active Profile как `dev`. Далее приложение можно запускать через главный класс.
 ![image](https://github.com/user-attachments/assets/038c6247-86bc-4495-a9b0-31f7c617b65b)
 
