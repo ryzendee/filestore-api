@@ -22,13 +22,18 @@ public class ControllerExceptionHandler {
         return new ErrorDtoResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDtoResponse handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ErrorDtoResponse(ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidationErrorDtoResponse handleMethodNotValidException(BindingResult bindingResult) {
         List<String> messages = getMessagesFromFieldErrors(bindingResult.getFieldErrors());
         return new ValidationErrorDtoResponse(messages);
     }
-
     private List<String> getMessagesFromFieldErrors(List<FieldError> fieldErrors) {
         return fieldErrors.stream()
                 .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
