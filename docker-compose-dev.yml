@@ -1,0 +1,23 @@
+version: '3.9'
+
+volumes:
+  db-data:
+    driver: local
+
+services:
+  files-db:
+    image: postgres:15.6
+    restart: always
+    environment:
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_DB=filestoredb
+    ports:
+      - "5315:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
