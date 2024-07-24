@@ -1,13 +1,11 @@
 package com.app.filestore.controller;
 
 import com.app.filestore.dto.FileDto;
-import com.app.filestore.dto.FileDtoRequest;
-import com.app.filestore.dto.FileDtoResponse;
+import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.service.FileService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,8 +24,8 @@ public class FileController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FileDtoResponse saveFile(@Valid @RequestBody FileDtoRequest fileDtoRequest) {
-        return fileService.saveFile(fileDtoRequest);
+    public FileCreateDtoResponse saveFile(@Valid @RequestBody com.app.filestore.dto.request.FileCreateDtoResponse fileCreateDtoResponse) {
+        return fileService.saveFile(fileCreateDtoResponse);
     }
 
     @GetMapping

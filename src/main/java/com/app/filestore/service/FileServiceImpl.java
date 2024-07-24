@@ -1,8 +1,7 @@
 package com.app.filestore.service;
 
 import com.app.filestore.dto.FileDto;
-import com.app.filestore.dto.FileDtoRequest;
-import com.app.filestore.dto.FileDtoResponse;
+import com.app.filestore.dto.response.FileCreateDtoResponse;
 import com.app.filestore.entity.FileEntity;
 import com.app.filestore.exception.file.FileNotFoundException;
 import com.app.filestore.mapper.FileMapper;
@@ -25,11 +24,11 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public FileDtoResponse saveFile(FileDtoRequest fileDtoRequest) {
-        FileEntity entity = fileMapper.map(fileDtoRequest);
+    public FileCreateDtoResponse saveFile(com.app.filestore.dto.request.FileCreateDtoResponse fileCreateDtoResponse) {
+        FileEntity entity = fileMapper.map(fileCreateDtoResponse);
         fileRepository.save(entity);
 
-        return new FileDtoResponse(entity.getId());
+        return new FileCreateDtoResponse(entity.getId());
     }
 
     @Transactional(readOnly = true)

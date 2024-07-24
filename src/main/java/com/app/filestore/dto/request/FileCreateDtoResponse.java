@@ -1,4 +1,4 @@
-package com.app.filestore.dto;
+package com.app.filestore.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDate;
 
-public record FileDtoRequest(
+public record FileCreateDtoResponse(
         @NotBlank(message = "file must not be blank")
         String file,
         @NotBlank(message = "title must not be blank")

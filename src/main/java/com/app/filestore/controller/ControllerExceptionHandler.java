@@ -1,7 +1,7 @@
 package com.app.filestore.controller;
 
-import com.app.filestore.dto.ErrorDtoResponse;
-import com.app.filestore.dto.ValidationErrorDtoResponse;
+import com.app.filestore.dto.response.ErrorDtoResponse;
+import com.app.filestore.dto.response.ValidationErrorDtoResponse;
 import com.app.filestore.exception.file.FileNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;

@@ -1,4 +1,4 @@
-package com.app.filestore.dto;
+package com.app.filestore.dto.response;
 
 import java.util.List;
 
