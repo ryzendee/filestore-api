@@ -5,16 +5,21 @@ import com.app.filestore.dto.FileDtoRequest;
 import com.app.filestore.dto.FileDtoResponse;
 import com.app.filestore.service.FileService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 @RequestMapping("/api/v1/files")
 @RequiredArgsConstructor
 public class FileController {
+
+    private static final int MIN_PAGE = 0;
+    private static final int MIN_PAGE_SIZE = 1;
 
     private final FileService fileService;
 
@@ -23,6 +28,18 @@ public class FileController {
     @ResponseStatus(HttpStatus.CREATED)
     public FileDtoResponse saveFile(@Valid @RequestBody FileDtoRequest fileDtoRequest) {
         return fileService.saveFile(fileDtoRequest);
+    }
+
+    @GetMapping
+    public Page<FileDto> getFilePage(@RequestParam(defaultValue = "0") @Min(MIN_PAGE) int page,
+                                     @RequestParam(defaultValue = "20") @Min(MIN_PAGE_SIZE) int size,
+                                     @RequestParam(defaultValue = "asc") String direction) {
+
+        if (!StringUtils.equalsAny(direction, "asc", "desc")) {
+            throw new IllegalArgumentException("Direction should be equal to asc or desc. Actual value : " + direction);
+        }
+
+        return fileService.getFilePageSortedByCreationTime(page, size, direction);
     }
 
     @GetMapping("/{id}")
