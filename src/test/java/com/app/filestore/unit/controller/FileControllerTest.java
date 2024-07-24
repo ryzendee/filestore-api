@@ -50,7 +50,7 @@ class FileControllerTest {
     @DisplayName("Save file: should save file and return id with status CREATED(200)")
     @Test
     void saveFile_validRequest_statusCreated() {
-        FileDtoRequest dtoRequest = new FileDtoRequest("asdkxzcWiksadm", "test-title", LocalDate.now());
+        FileDtoRequest dtoRequest = new FileDtoRequest("asdkxzcWiksadm", "test-title", "descr", LocalDate.now());
         FileDtoResponse expectedResponse = new FileDtoResponse(1L);
         int expectedId = expectedResponse.id().intValue();
 
@@ -73,7 +73,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidFile")
     @ParameterizedTest
     void saveFile_invalidFile_statusBadRequest(String invalidFile) {
-        FileDtoRequest dtoRequest = new FileDtoRequest(invalidFile, "title", LocalDate.now());
+        FileDtoRequest dtoRequest = new FileDtoRequest(invalidFile, "title", "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -90,7 +90,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidTitle")
     @ParameterizedTest
     void saveFile_invalidTitle_statusBadRequest(String invalidTitle) {
-        FileDtoRequest dtoRequest = new FileDtoRequest("dsazcxklASejff", invalidTitle, LocalDate.now());
+        FileDtoRequest dtoRequest = new FileDtoRequest("dsazcxklASejff", invalidTitle, "descr", LocalDate.now());
 
         given()
                 .contentType(ContentType.JSON)
@@ -107,7 +107,7 @@ class FileControllerTest {
     @MethodSource("getArgsForInvalidCreationTime")
     @ParameterizedTest
     void saveFile_invalidCreationTime_statusBadRequest(LocalDate invalidCreationTime) {
-        FileDtoRequest dtoRequest = new FileDtoRequest("tesdsavZXVcwtee", "title", invalidCreationTime);
+        FileDtoRequest dtoRequest = new FileDtoRequest("tesdsavZXVcwtee", "title", "descr", invalidCreationTime);
 
         given()
                 .contentType(ContentType.JSON)

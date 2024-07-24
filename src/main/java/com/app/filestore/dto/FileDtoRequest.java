@@ -11,6 +11,8 @@ public record FileDtoRequest(
         String file,
         @NotBlank(message = "title must not be blank")
         String title,
+
+        String description,
         @NotNull(message = "creationTime must not be null")
         @PastOrPresent(message = "creationTime must be in the past or in the present")
         LocalDate creationTime

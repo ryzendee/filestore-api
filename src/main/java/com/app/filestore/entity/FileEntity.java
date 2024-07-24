@@ -21,11 +21,13 @@ public class FileEntity {
     private Long id;
     private String file;
     private String title;
+    private String description;
     private LocalDate creationTime;
 
-    public FileEntity(String file, String title, LocalDate creationTime) {
+    public FileEntity(String file, String title, String description, LocalDate creationTime) {
         this.file = file;
         this.title = title;
+        this.description = description;
         this.creationTime = creationTime;
     }
 }

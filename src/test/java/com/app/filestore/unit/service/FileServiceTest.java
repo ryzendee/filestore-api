@@ -34,8 +34,8 @@ public class FileServiceTest {
     @DisplayName("Save file: should save file and return file response")
     @Test
     void saveFile_noCondition_shouldSaveAndReturnFileResponse() {
-        FileDtoRequest dtoRequest = new FileDtoRequest("sadXZcvklnsd", "title", LocalDate.now());
-        FileEntity fileEntity = new FileEntity(1L, dtoRequest.file(), dtoRequest.title(), dtoRequest.creationTime());
+        FileDtoRequest dtoRequest = new FileDtoRequest("sadXZcvklnsd", "title", "descr", LocalDate.now());
+        FileEntity fileEntity = new FileEntity(1L, dtoRequest.file(), dtoRequest.title(), dtoRequest.description(), dtoRequest.creationTime());
 
         when(fileMapper.map(dtoRequest))
                 .thenReturn(fileEntity);
