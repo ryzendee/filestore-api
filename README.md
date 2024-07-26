@@ -8,7 +8,7 @@
 - [Покрытие кода тестами](#покрытие-кода-тестами)
 - [Инструкция по запуску](#инструкция-по-запуску)
   - [С помощью Docker](#с-помощью-docker)
-  - [Через IDE (для IDEA)](#через-ide-для-idea)
+  - [Через IDE](#через-ide)
 
 ## Стек
 - Java 17
@@ -104,7 +104,7 @@
     docker compose up
     ```
 
-### Через IDE (для IDEA)
+### Через IDE
 1. Клонировать репозиторий:
     ```sh
     git clone https://github.com/ryzendee/filestore-api
@@ -113,10 +113,8 @@
     ```sh
     cd filestore-api
     ```    
-2. Запустить docker-compose-dev (по желанию добавить -d для запуска в фоновом режиме):
+3. Запустить docker-compose-dev (по желанию добавить -d для запуска в фоновом режиме):
     ```sh
     docker-compose -f docker-compose-dev.yml up
     ```
-3. В edit configurations для приложения задать Active Profile как `dev`. Далее приложение можно запускать через главный класс.
-![image](https://github.com/user-attachments/assets/038c6247-86bc-4495-a9b0-31f7c617b65b)
-
+4. Запустить приложение через класс FileStoreApiApplication
