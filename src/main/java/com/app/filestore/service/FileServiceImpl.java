@@ -43,6 +43,7 @@ public class FileServiceImpl implements FileService {
         return fileRepository.findAll(pageable)
                 .map(fileMapper::map);
     }
+
     @Transactional(readOnly = true)
     @Override
     public FileDto getFileById(Long id) {
