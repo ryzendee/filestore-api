@@ -18,8 +18,11 @@ public class FileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //Exclude it so as not to clutter up the logs
     @Lob
+    @ToString.Exclude
     private String file;
+
     private String title;
     private String description;
     private LocalDate creationTime;
