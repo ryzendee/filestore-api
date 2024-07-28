@@ -17,6 +17,8 @@ public class FileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Lob
     private String file;
     private String title;
     private String description;
